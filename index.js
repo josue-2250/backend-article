@@ -34,7 +34,11 @@ app.post('/signup', (req, res) => {
 
   const newUser = { id: nextUserId++, username, password };
   users.push(newUser);
-  res.status(201).json({ message: 'User created successfully', userId: newUser.id });
+
+  const token = generateToken();
+  sessions[token] = newUser.id;
+
+  res.status(201).json({ message: 'User created successfully', token });
 });
 
 // Login: POST /login
@@ -124,3 +128,4 @@ app.delete('/articles/:id', authenticate, (req, res) => {
 app.use((_req, res) => res.status(404).json({ error: 'Route not found' }));
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
